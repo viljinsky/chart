@@ -107,19 +107,15 @@ public class ChartSeries {
     }
 
     public void rebuild() {
-//        bars = new ChartBar[data.size()];
         bars = new ArrayList<>();
         Set<Integer> keySet = data.keySet();
         ChartBar bar;
-//        int I = 0;
         int id;
         for (Iterator it = keySet.iterator(); it.hasNext();) {
             id = (Integer) it.next();
             bar = new ChartBar(this, id);
             bar.value = data.get(id);
             bars.add(bar);
-//            bars[I] = bar;
-//            I++;
         }
     }
 

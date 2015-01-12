@@ -56,7 +56,7 @@ class DataPanel extends JPanel{
         
         @Override
         public int getRowCount() {
-            return series.data.size();
+            return series.bars.size();
         }
 
         @Override
@@ -66,7 +66,15 @@ class DataPanel extends JPanel{
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            return  series.data.get(rowIndex);
+            ChartBar bar = series.bars.get(rowIndex);
+            switch (columnIndex){
+                case 1:
+                    return  bar.key;
+                case 2:
+                    return  bar.getValue();
+                    default:
+                        return null;
+            }
         }
     }
     
@@ -149,16 +157,16 @@ public class Test extends JFrame{
     public void doCommand(String command){
         switch (command){
             case "series1":
-                chart.addSeries(Chart.series1);
+//                chart.addSeries(Chart.series1);
                 break;
             case "series2":
-                chart.addSeries(Chart.series2);
+//                chart.addSeries(Chart.series2);
                 break;
             case "series3":
-                chart.addSeries(Chart.series3);
+//                chart.addSeries(Chart.series3);
                 break;
             case "clear":
-                chart.clear();
+//                chart.clear();
                 break;
         }
         chart.updateUI();

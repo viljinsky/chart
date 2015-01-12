@@ -17,6 +17,7 @@ public class Test2  extends Chart{
     static ChartSeries series1,series2,series3;
     JPanel statusBar;
     JLabel statusLabel;
+    JMenuBar menuBar;
 
     @Override
     protected void onBarClick(ChartBar bar) {
@@ -59,6 +60,14 @@ public class Test2  extends Chart{
         statusLabel = new JLabel("status bar");
         statusBar.add(statusLabel);
         
+        menuBar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        JMenuItem menuItem;
+        
+        menuItem = new JMenuItem("Exit");
+        menu.add(menuItem);
+        menuBar.add(menu);
+        
     }
     
     public static void createAndShowGUI(){
@@ -76,6 +85,7 @@ public class Test2  extends Chart{
                 
         
         frame.setContentPane(panel);
+        frame.setJMenuBar(chart.menuBar);
         frame.pack();
         frame.setVisible(true);
     }
