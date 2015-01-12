@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,7 +21,8 @@ public class ChartSeries {
     String name = "Noname";
     Color color = Color.pink;
     HashMap<Integer, Object> data = new HashMap<>();
-    ChartBar[] bars;
+//    ChartBar[] bars;
+    List<ChartBar> bars = new ArrayList<>();
 
     @Override
     public String toString(){
@@ -104,17 +107,19 @@ public class ChartSeries {
     }
 
     public void rebuild() {
-        bars = new ChartBar[data.size()];
+//        bars = new ChartBar[data.size()];
+        bars = new ArrayList<>();
         Set<Integer> keySet = data.keySet();
         ChartBar bar;
-        int I = 0;
+//        int I = 0;
         int id;
         for (Iterator it = keySet.iterator(); it.hasNext();) {
             id = (Integer) it.next();
             bar = new ChartBar(this, id);
             bar.value = data.get(id);
-            bars[I] = bar;
-            I++;
+            bars.add(bar);
+//            bars[I] = bar;
+//            I++;
         }
     }
 
