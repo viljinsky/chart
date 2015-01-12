@@ -147,7 +147,8 @@ public class Chart2 extends JPanel{
     }
     
     public static void createAndShow(){
-        ChartSeries series1,series2,series3;
+        ChartSeries series1;
+        ChartSeries series2,series3;
         series1 = new ChartSeries("Пример", Color.yellow);
         series1.addValue(1,1);
         series1.addValue(2,2);
