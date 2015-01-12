@@ -15,12 +15,13 @@ import java.util.Set;
  *
  * @author vadik
  */
-class ChartSeries {
+public class ChartSeries {
     String name = "Noname";
     Color color = Color.pink;
     HashMap<Integer, Object> data = new HashMap<>();
     ChartBar[] bars;
 
+    @Override
     public String toString(){
         return "ChartSeries "+name+" "+color;
     }

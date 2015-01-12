@@ -36,16 +36,6 @@ class AxisControl extends JPanel{
         }
         
         
-//        box = Box.createHorizontalBox();
-//        JSpinner minValue= new JSpinner();
-//        minValue.setMaximumSize(new Dimension(100,14));
-//        box.add(new JLabel("minValue"));
-////        box.add(Box.createHorizontalGlue());
-//        box.add(minValue);
-//        box.setAlignmentY(TOP_ALIGNMENT);
-//        box.setAlignmentY(LEFT_ALIGNMENT);
-//        add(box);
-                
         
         setBorder( BorderFactory.createEmptyBorder(10, 10, 10,10));
         
@@ -122,7 +112,7 @@ public class Test extends JFrame{
         initComponents(getContentPane());
     }
     
-    class Chart3 extends Chart2{
+    class Chart3 extends Chart{
 
         @Override
         protected void onBarClick(ChartBar bar) {
@@ -159,13 +149,13 @@ public class Test extends JFrame{
     public void doCommand(String command){
         switch (command){
             case "series1":
-                chart.addSeries(Chart2.series1);
+                chart.addSeries(Chart.series1);
                 break;
             case "series2":
-                chart.addSeries(Chart2.series2);
+                chart.addSeries(Chart.series2);
                 break;
             case "series3":
-                chart.addSeries(Chart2.series3);
+                chart.addSeries(Chart.series3);
                 break;
             case "clear":
                 chart.clear();

@@ -17,44 +17,77 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 
-
-
-public class Chart2 extends JPanel{
+/**
+ *
+ * @author vadik
+ */
+public class Chart extends JPanel{
     ChartAxis xAxis;
     ChartAxis yAxis;
+
+    /**
+     *
+     */
     public static ChartSeries series1;
+
+    /**
+     *
+     */
     public static ChartSeries series2;
+
+    /**
+     *
+     */
     public static ChartSeries series3;
     List<ChartSeries> seriesList = new ArrayList<>();
 
-    
+    /**
+     *
+     */
     public void clear(){
         seriesList.clear();
     }
     
+    /**
+     *
+     * @param series
+     */
     public void addSeries(ChartSeries series){
         seriesList.add(series);
     }
     
+    /**
+     *
+     * @return
+     */
     public int getSeriesCount(){
         return seriesList.size();
     }
     
+    /**
+     *
+     * @return
+     */
     public ChartAxis getXAxis(){
         return xAxis;
     }
     
+    /**
+     *
+     * @return
+     */
     public ChartAxis getYAxis(){
         return yAxis;
     }
-    
-    
-    
-    public Chart2(){
+
+    /**
+     *
+     */
+    public Chart(){
         setPreferredSize(new Dimension(800,600));
         xAxis = new ChartAxis(ChartAxis.X_AXIS);
         yAxis = new ChartAxis(ChartAxis.Y_AXIS);   
-        initComponents();
+//        initComponents();
         addMouseListener(new MouseAdapter() {
 
             @Override
@@ -69,6 +102,12 @@ public class Chart2 extends JPanel{
         });
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     protected ChartBar hitTest(int x,int y){
         for (ChartSeries series:seriesList){
             for (ChartBar bar:series.bars){
@@ -80,43 +119,54 @@ public class Chart2 extends JPanel{
         return null;
     }
     
+    /**
+     *
+     * @param bar
+     */
     protected void onBarClick(ChartBar bar){
         System.out.println(bar.toString());
     }
     
-    public void initComponents(){
-        series1 = new ChartSeries("Пример", Color.yellow);
-        series1.addValue(1,1);
-        series1.addValue(2,2);
-        series1.addValue(3,3);
-        series1.addValue(4,4);
-        series1.addValue(5,-1);
-        series1.addValue(6,6);
-        series1.addValue(7,7);
-        series1.addValue(8,1);
-        series1.addValue(9,1);
-        series1.rebuild();
-        
-        series2 = new ChartSeries("Пример2", new Color(125,255,255));
-        series2.addValue(1,8);
-        series2.addValue(2,7);
-        series2.addValue(3,6);
-        series2.addValue(7,5);
-        series2.addValue(8,4);
-        series2.addValue(9,-1);
-        series2.rebuild();
-        
-        series3 = new ChartSeries("Пример3",new Color(225,125,225));
-        series3.addValue(0,8);
-        series3.addValue(1,7);
-        series3.addValue(9,6);
-        series3.addValue(10,5);
-        series3.addValue(2,4);
-        series3.addValue(3,-1);
-        series3.rebuild();
-        
-    }
+//    public void initComponents(){
+//        series1 = new ChartSeries("Пример", Color.yellow);
+//        series1.addValue(1,1);
+//        series1.addValue(2,2);
+//        series1.addValue(3,3);
+//        series1.addValue(4,4);
+//        series1.addValue(5,-1);
+//        series1.addValue(6,6);
+//        series1.addValue(7,7);
+//        series1.addValue(8,1);
+//        series1.addValue(9,1);
+//        series1.rebuild();
+//        
+//        series2 = new ChartSeries("Пример2", new Color(125,255,255));
+//        series2.addValue(1,8);
+//        series2.addValue(2,7);
+//        series2.addValue(3,6);
+//        series2.addValue(7,5);
+//        series2.addValue(8,4);
+//        series2.addValue(9,-1);
+//        series2.rebuild();
+//        
+//        series3 = new ChartSeries("Пример3",new Color(225,125,225));
+//        series3.addValue(0,8);
+//        series3.addValue(1,7);
+//        series3.addValue(9,6);
+//        series3.addValue(10,5);
+//        series3.addValue(2,4);
+//        series3.addValue(3,-1);
+//        series3.rebuild();
+//        
+//    }
     
+    /**
+     *
+     * @param g
+     * @param rect
+     * @param series
+     * @param xOffset
+     */
     public void drawSeries(Graphics g,Rectangle rect,ChartSeries series,Integer xOffset){
         xAxis.begin();
         Integer xValue,yValue ;
@@ -150,11 +200,22 @@ public class Chart2 extends JPanel{
         }
     }
     
+    /**
+     *
+     * @param rect
+     * @param xValue
+     * @return
+     */
     public Integer getBarCenter(Rectangle rect,Integer xValue){
         float k = rect.width/(xAxis.maxValue-xAxis.minValue);
         return  rect.x + Math.round((xValue-xAxis.minValue) * k);
     }
     
+    /**
+     *
+     * @param g
+     * @param rect
+     */
     public void drawTics(Graphics g,Rectangle rect){
         
         Font f = new Font("courier",Font.BOLD,14);
@@ -197,7 +258,6 @@ public class Chart2 extends JPanel{
     @Override
     public void paint(Graphics g){
         super.paint(g);
-        System.out.println("paint");
                 
         Rectangle r = new Rectangle(10,10,getWidth()-20,getHeight()-40);
         
@@ -215,23 +275,30 @@ public class Chart2 extends JPanel{
         }
     }
     
-    public static void createAndShow(){
-        
-        Chart2 chart = new Chart2();
-        chart.getXAxis().setRange(-2, 12);
-        chart.getYAxis().setRange(-2, 10);
-        chart.addSeries(series1);
-        chart.addSeries(series2);
-        chart.addSeries(series3);
-        JFrame frame = new JFrame("Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(chart);
-        frame.pack();
-        frame.setVisible(true);
-    }
-    
-    public static void main(String[] args){
-        createAndShow();
-    }
+    /**
+     *
+     */
+//    public static void createAndShow(){
+//        
+//        Chart chart = new Chart();
+//        chart.getXAxis().setRange(-2, 12);
+//        chart.getYAxis().setRange(-2, 10);
+//        chart.addSeries(series1);
+//        chart.addSeries(series2);
+//        chart.addSeries(series3);
+//        JFrame frame = new JFrame("Test");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setContentPane(chart);
+//        frame.pack();
+//        frame.setVisible(true);
+//    }
+//    
+//    /**
+//     *
+//     * @param args
+//     */
+//    public static void main(String[] args){
+//        createAndShow();
+//    }
     
 }

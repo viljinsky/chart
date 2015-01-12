@@ -10,7 +10,7 @@ package ru.viljinsky.chart;
  *
  * @author vadik
  */
-class ChartAxis {
+public class ChartAxis {
     public static final Integer X_AXIS = 0;
     public static final Integer Y_AXIS = 1;
     protected Integer minValue = 0;

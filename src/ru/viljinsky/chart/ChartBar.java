@@ -13,7 +13,7 @@ import java.awt.Rectangle;
  *
  * @author vadik
  */
-class ChartBar {
+public class ChartBar {
     ChartSeries series;
     Integer key;
     Object value;
