@@ -13,6 +13,8 @@ package ru.viljinsky.chart;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 
@@ -24,6 +26,11 @@ public class Chart2 extends JPanel{
     public static ChartSeries series2;
     public static ChartSeries series3;
     List<ChartSeries> seriesList = new ArrayList<>();
+
+    
+    public void clear(){
+        seriesList.clear();
+    }
     
     public void addSeries(ChartSeries series){
         seriesList.add(series);
@@ -47,8 +54,67 @@ public class Chart2 extends JPanel{
         setPreferredSize(new Dimension(800,600));
         xAxis = new ChartAxis(ChartAxis.X_AXIS);
         yAxis = new ChartAxis(ChartAxis.Y_AXIS);   
-//        xAxis.setRange(-2,10);
-//        yAxis.setRange(-2,10);
+        initComponents();
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int x,y;
+                x=e.getX();y=e.getY();
+                ChartBar bar = hitTest(x,y);
+                if (bar!=null){
+                    onBarClick(bar);
+                }
+            }
+        });
+    }
+    
+    protected ChartBar hitTest(int x,int y){
+        for (ChartSeries series:seriesList){
+            for (ChartBar bar:series.bars){
+                if (bar.bounds.contains(x, y)){
+                    return bar;
+                }
+            }
+        }
+        return null;
+    }
+    
+    protected void onBarClick(ChartBar bar){
+        System.out.println(bar.toString());
+    }
+    
+    public void initComponents(){
+        series1 = new ChartSeries("Пример", Color.yellow);
+        series1.addValue(1,1);
+        series1.addValue(2,2);
+        series1.addValue(3,3);
+        series1.addValue(4,4);
+        series1.addValue(5,-1);
+        series1.addValue(6,6);
+        series1.addValue(7,7);
+        series1.addValue(8,1);
+        series1.addValue(9,1);
+        series1.rebuild();
+        
+        series2 = new ChartSeries("Пример2", new Color(125,255,255));
+        series2.addValue(1,8);
+        series2.addValue(2,7);
+        series2.addValue(3,6);
+        series2.addValue(7,5);
+        series2.addValue(8,4);
+        series2.addValue(9,-1);
+        series2.rebuild();
+        
+        series3 = new ChartSeries("Пример3",new Color(225,125,225));
+        series3.addValue(0,8);
+        series3.addValue(1,7);
+        series3.addValue(9,6);
+        series3.addValue(10,5);
+        series3.addValue(2,4);
+        series3.addValue(3,-1);
+        series3.rebuild();
+        
     }
     
     public void drawSeries(Graphics g,Rectangle rect,ChartSeries series,Integer xOffset){
@@ -68,11 +134,12 @@ public class Chart2 extends JPanel{
                 
                 int x=getBarCenter(rect, bar.key);
                 int x1,y1,w,h;
-                x1 = x-10+xOffset;
+                x1 = x+xOffset;
                 w=20;
                 
                 y1=rect.y+rect.height-yValue;
                 h=yValue;
+                bar.setBounds(new Rectangle(x1,y1,w,h));
                 g.setColor(bar.series.color);
                 g.fillRect(x1,y1,w,h);
                 // 3d
@@ -130,6 +197,8 @@ public class Chart2 extends JPanel{
     @Override
     public void paint(Graphics g){
         super.paint(g);
+        System.out.println("paint");
+                
         Rectangle r = new Rectangle(10,10,getWidth()-20,getHeight()-40);
         
         g.setColor(Color.white);
@@ -147,38 +216,6 @@ public class Chart2 extends JPanel{
     }
     
     public static void createAndShow(){
-        ChartSeries series1;
-        ChartSeries series2,series3;
-        series1 = new ChartSeries("Пример", Color.yellow);
-        series1.addValue(1,1);
-        series1.addValue(2,2);
-        series1.addValue(3,3);
-        series1.addValue(4,4);
-        series1.addValue(5,-1);
-        series1.addValue(6,6);
-        series1.addValue(7,7);
-        series1.addValue(8,1);
-        series1.addValue(9,1);
-        series1.rebuild();
-        
-        series2 = new ChartSeries("Пример2", new Color(125,255,255));
-        series2.addValue(1,8);
-        series2.addValue(2,7);
-        series2.addValue(3,6);
-        series2.addValue(7,5);
-        series2.addValue(8,4);
-        series2.addValue(9,-1);
-        series2.rebuild();
-        
-        series3 = new ChartSeries("Пример3",new Color(225,125,225));
-        series3.addValue(0,8);
-        series3.addValue(1,7);
-        series3.addValue(9,6);
-        series3.addValue(10,5);
-        series3.addValue(2,4);
-        series3.addValue(3,-1);
-        series3.rebuild();
-        
         
         Chart2 chart = new Chart2();
         chart.getXAxis().setRange(-2, 12);

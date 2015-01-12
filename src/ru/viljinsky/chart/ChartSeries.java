@@ -21,6 +21,9 @@ class ChartSeries {
     HashMap<Integer, Object> data = new HashMap<>();
     ChartBar[] bars;
 
+    public String toString(){
+        return "ChartSeries "+name+" "+color;
+    }
     public ChartSeries(Color color) {
         this.color = color;
         setData(createData(10));
