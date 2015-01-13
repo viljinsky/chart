@@ -63,6 +63,29 @@ public class ChartSeries {
         }
         return null;
     }
+    /**
+     * Получение значение с коэффициентом
+     * @param xValue
+     * @param k
+     * @return 
+     */
+    public Integer getYValueK(Integer xValue,Float k) {
+        Object v = data.get(xValue);
+        if (v != null) {
+            if (v instanceof Integer) {
+                return Math.round((Integer) v * k);
+            } else if (v instanceof Long) {
+//                Integer L = ((Long) v ).intValue();
+                return  Math.round(((Long) v ).intValue()*k);
+            } else if (v instanceof Float) {
+                return Math.round((Float) v * k);
+            } else if (v instanceof Double) {
+                return Math.round(new Float((Double) v) * k);
+            }
+        }
+        return null;
+    }
+    
 
     public Integer getMaxX() {
         Integer result = Integer.MIN_VALUE;

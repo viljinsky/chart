@@ -55,6 +55,10 @@ public class ChartBar {
     public Integer getValue() {
         return series.getYValue(key);
     }
+    
+    public Integer getValueK(Float k){
+        return series.getYValueK(key, k);
+    }
 
     public String toString() {
         return "bar xValue:" + key + " yValue:" + value + " series:" + series.name;

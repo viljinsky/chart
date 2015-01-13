@@ -23,6 +23,9 @@ import javax.swing.*;
  * @author vadik
  */
 public class Chart extends JPanel{
+    String caption="Chart demo";
+    Font defaultFont = new Font("courier",Font.PLAIN,12);
+    Font captionFont = new Font("courier", Font.BOLD, 24);
     ChartAxis xAxis;
     ChartAxis yAxis;
     List<ChartSeries> seriesList = new ArrayList<>();
@@ -72,7 +75,9 @@ public class Chart extends JPanel{
     public Chart(){
         setPreferredSize(new Dimension(800,600));
         xAxis = new ChartAxis(ChartAxis.X_AXIS);
+        xAxis.caption="X,mm";
         yAxis = new ChartAxis(ChartAxis.Y_AXIS);   
+        yAxis.caption="Y";
         addMouseListener(new MouseAdapter() {
 
             @Override
@@ -133,7 +138,8 @@ public class Chart extends JPanel{
             bar = series.getBar(xValue);
             if (bar!=null){
                 
-                yValue = Math.round((bar.getValue()-yAxis.minValue)*f);
+//                yValue = Math.round((bar.getValue()-yAxis.minValue)*f);
+                yValue = bar.getValueK(f) - Math.round(yAxis.minValue*f);
                                                               
                 int x=getBarCenter(rect, bar.key);
                 int x1,y1,w,h;
@@ -176,29 +182,41 @@ public class Chart extends JPanel{
      */
     public void drawAxis(Graphics g,Rectangle rect){
         
-        Font f = new Font("courier",Font.BOLD,14);
+        Font f = new Font("courier",Font.PLAIN,14);
         
         g.setFont(f);
         
         int fh = g.getFontMetrics(f).getHeight();
+        int fw;
+        String sValue;
         
-        xAxis.begin();
         Integer value;
         int x1,y1,x2,y2;
-        g.setColor(Color.lightGray);
         
         float kX = rect.width/(xAxis.maxValue-xAxis.minValue);
+        float kY = rect.height/(yAxis.maxValue-yAxis.minValue);
+        
+        xAxis.begin();
         while (xAxis.hasNext()){
             value = xAxis.next();
             x1=rect.x + Math.round((value-xAxis.minValue) * kX);
             x2=x1;
             y1=rect.y;y2=rect.y+rect.height;
+            g.setColor(Color.lightGray);
             g.drawLine(x1, y1, x2, y2);
-            g.drawString(value.toString(), x1, y2+fh);
+            // Метки
+            g.setColor(Color.black);
+            sValue = value.toString();
+            fw = g.getFontMetrics().stringWidth(sValue);
+            g.drawString(sValue, x1- fw/2, y2+fh);
         }
+        // Подпись по оси Х
+        sValue = xAxis.caption;
+        x1=rect.x+rect.width-g.getFontMetrics().stringWidth(sValue);
+        y1=rect.y+rect.height-10;
+        g.drawString(sValue, x1, y1);
         
         
-        float kY = rect.height/(yAxis.maxValue-yAxis.minValue);
         yAxis.begin();
         while (yAxis.hasNext()){
             value = yAxis.next();
@@ -206,16 +224,27 @@ public class Chart extends JPanel{
             x2=rect.x+rect.width;
             y1=rect.y+rect.height- Math.round((value-yAxis.minValue)*kY);
             y2=y1;
+            g.setColor(Color.lightGray);
             g.drawLine(x1, y1, x2, y2);
-            g.drawString(value.toString(), x1-10, y1);
+            g.setColor(Color.black);
+            
+            sValue = value.toString();
+            fw = g.getFontMetrics().stringWidth(value.toString());
+            g.drawString(sValue, x1-fw-2, y1+fh/2);
         }
+        // подпись по оси Y
+        sValue = yAxis.caption;
+        x1=rect.x+10;
+        y1=rect.y+fh/2;
+        g.drawString(sValue, x1, y1);
     }
     
     @Override
     public void paint(Graphics g){
         super.paint(g);
-                
-        Rectangle r = new Rectangle(10,10,getWidth()-20,getHeight()-40);
+        g.setFont(defaultFont);
+        Rectangle r ; // Рабочая область диаграммы
+        r = new Rectangle(40,10,getWidth()-50,getHeight()-40);
         
         g.setColor(Color.white);
         g.fillRect(r.x, r.y, r.width,r.height);
@@ -229,6 +258,14 @@ public class Chart extends JPanel{
             drawSeries(g, r, series, offset);
             offset+=barWidth;
         }
+        
+        int x,y;
+        g.setFont(captionFont);
+        g.setColor(Color.black);
+        x = r.x+r.width/2 - g.getFontMetrics().stringWidth(caption)/2;
+        y = r.y+ g.getFontMetrics().getHeight();
+        g.drawString(caption, x,y);
+        
     }
     
     public void autoRange(){

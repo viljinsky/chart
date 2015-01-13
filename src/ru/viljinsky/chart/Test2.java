@@ -40,7 +40,7 @@ public class Test2  extends Chart{
         series1.rebuild();
         
         series2 = new ChartSeries("Пример2", new Color(125,255,255));
-        series2.addValue(1,8);
+        series2.addValue(0,8);
         series2.addValue(2,7);
         series2.addValue(3,6);
         series2.addValue(7,5);
