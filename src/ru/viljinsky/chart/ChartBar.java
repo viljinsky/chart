@@ -14,17 +14,12 @@ import java.awt.Rectangle;
  *
  * @author vadik
  */
-public class ChartBar {
+
+abstract class ChartElement{
     ChartSeries series;
     Integer key;
-    Object value;
     Rectangle bounds;
-
-    public ChartBar(ChartSeries series, Integer key) {
-        this.series = series;
-        this.key = key;
-    }
-
+    
     public boolean hitTest(int x, int y) {
         if (bounds!=null)
             return bounds.contains(x, y);
@@ -35,7 +30,28 @@ public class ChartBar {
     public void setBounds(Rectangle bounds) {
         this.bounds = bounds;
     }
+    
+    public abstract void draw(Graphics g);
+    
+    public Integer getValueK(Float k){
+        return series.getYValueK(key, k);
+    }
+    
+    public Integer getValue() {
+        return series.getYValue(key);
+    }
+}
 
+public class ChartBar extends ChartElement{
+    Object value;
+
+    public ChartBar(ChartSeries series, Integer key) {
+        this.series = series;
+        this.key = key;
+    }
+
+
+    @Override
     public void draw(Graphics g) {
         int x,y,w,h;
         x = bounds.x;
@@ -52,13 +68,7 @@ public class ChartBar {
         
     }
 
-    public Integer getValue() {
-        return series.getYValue(key);
-    }
     
-    public Integer getValueK(Float k){
-        return series.getYValueK(key, k);
-    }
 
     public String toString() {
         return "bar xValue:" + key + " yValue:" + value + " series:" + series.name;

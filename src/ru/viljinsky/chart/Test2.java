@@ -21,7 +21,7 @@ public class Test2  extends Chart{
     JMenuBar menuBar;
 
     @Override
-    protected void onBarClick(ChartBar bar) {
+    protected void onBarClick(ChartElement bar) {
         statusLabel.setText(bar.toString());
     }
     

@@ -18,10 +18,7 @@ import java.awt.event.*;
 import java.util.Iterator;
 import javax.swing.*;
 
-/**
- *
- * @author vadik
- */
+
 public class Chart extends JPanel{
     String caption="Chart demo";
     Font defaultFont = new Font("courier",Font.PLAIN,12);
@@ -29,6 +26,7 @@ public class Chart extends JPanel{
     ChartAxis xAxis;
     ChartAxis yAxis;
     List<ChartSeries> seriesList = new ArrayList<>();
+    ChartLegend legent;
 
     /**
      *
@@ -36,6 +34,11 @@ public class Chart extends JPanel{
     public void clear(){
         seriesList.clear();
     }
+    
+    public List<ChartSeries> getSeries(){
+        return seriesList;
+    }
+    
     
     /**
      * Добавление серии в диаграмму
@@ -74,6 +77,7 @@ public class Chart extends JPanel{
      */
     public Chart(){
         setPreferredSize(new Dimension(800,600));
+        legent = new ChartLegend(this);
         xAxis = new ChartAxis(ChartAxis.X_AXIS);
         xAxis.caption="X,mm";
         yAxis = new ChartAxis(ChartAxis.Y_AXIS);   
@@ -84,7 +88,7 @@ public class Chart extends JPanel{
             public void mousePressed(MouseEvent e) {
                 int x,y;
                 x=e.getX();y=e.getY();
-                ChartBar bar = hitTest(x,y);
+                ChartElement bar = hitTest(x,y);
                 if (bar!=null){
                     onBarClick(bar);
                 }
@@ -98,11 +102,11 @@ public class Chart extends JPanel{
      * @param y позиция мыши
      * @return бар если таковоё есть, в противном случаее null
      */
-    protected ChartBar hitTest(int x,int y){
+    protected ChartElement hitTest(int x,int y){
         ChartSeries series;
         for (int i=seriesList.size()-1;i>=0;i--){
             series = seriesList.get(i);
-            for (ChartBar bar:series.bars)
+            for (ChartElement bar:series.getBars())
                 if (bar.hitTest(x, y))
                     return bar;
         }
@@ -113,7 +117,7 @@ public class Chart extends JPanel{
      * событие клика по диаграмме если клик пришёлся на бар
      * @param bar по которому сделан клик.
      */
-    protected void onBarClick(ChartBar bar){
+    protected void onBarClick(ChartElement bar){
         System.out.println(bar.toString());
     }
     
@@ -127,7 +131,7 @@ public class Chart extends JPanel{
      */
     public void drawSeries(Graphics g,Rectangle rect,ChartSeries series,Integer xOffset){
         Integer xValue,yValue,yValue0 ;
-        ChartBar bar;
+        ChartElement bar;
         
         float f = rect.height/(yAxis.maxValue-yAxis.minValue);
         
@@ -241,10 +245,15 @@ public class Chart extends JPanel{
     
     @Override
     public void paint(Graphics g){
+        Integer LEFT_MARGIN = 40;
+        Integer TOP_MARGIN = 10;
+        Integer RIGHT_MARGIN = 10;
+        Integer BOTTON_MARGINE = 40;
+        
         super.paint(g);
         g.setFont(defaultFont);
         Rectangle r ; // Рабочая область диаграммы
-        r = new Rectangle(40,10,getWidth()-50,getHeight()-40);
+        r = new Rectangle(LEFT_MARGIN,TOP_MARGIN,getWidth()-LEFT_MARGIN-RIGHT_MARGIN,getHeight()-TOP_MARGIN-BOTTON_MARGINE);
         
         g.setColor(Color.white);
         g.fillRect(r.x, r.y, r.width,r.height);
@@ -265,6 +274,13 @@ public class Chart extends JPanel{
         x = r.x+r.width/2 - g.getFontMetrics().stringWidth(caption)/2;
         y = r.y+ g.getFontMetrics().getHeight();
         g.drawString(caption, x,y);
+        
+        Rectangle r2 = new Rectangle();
+        r2.y= 30;
+        r2.height= 50;
+        r2.x = r.x+r.width- 120;
+        r2.width = 120;
+        legent.draw(g, r2);
         
     }
     

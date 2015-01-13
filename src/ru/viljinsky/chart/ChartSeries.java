@@ -17,12 +17,37 @@ import java.util.ArrayList;
  *
  * @author vadik
  */
-public class ChartSeries {
+//public class ChartSeries{
+//    
+//}
+
+class ChartSeries{
     String name = "Noname";
     Color color = Color.pink;
     HashMap<Integer, Object> data = new HashMap<>();
-//    ChartBar[] bars;
-    List<ChartBar> bars = new ArrayList<>();
+    private List<ChartElement> bars = new ArrayList<>();
+    
+    public String getCaption(){
+        return name;
+    }
+    
+    public Color getColor(){
+        return color;
+    }
+    
+    public List<ChartElement> getBars(){
+        return bars;
+    }
+    
+    public ChartElement getElement(Integer index){
+        return bars.get(index);
+    }
+    
+    public Integer getElementCount(){
+        return data.size();
+    }
+    
+    
 
     @Override
     public String toString(){
@@ -156,8 +181,8 @@ public class ChartSeries {
         return result;
     }
 
-    public ChartBar getBar(Integer xValue) {
-        for (ChartBar bar : bars) {
+    public ChartElement getBar(Integer xValue) {
+        for (ChartElement bar : bars) {
             if (bar.key.equals(xValue)) {
                 return bar;
             }

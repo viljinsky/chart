@@ -56,7 +56,7 @@ class DataPanel extends JPanel{
         
         @Override
         public int getRowCount() {
-            return series.bars.size();
+            return series.getElementCount();
         }
 
         @Override
@@ -66,7 +66,7 @@ class DataPanel extends JPanel{
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            ChartBar bar = series.bars.get(rowIndex);
+            ChartElement bar = series.getElement(rowIndex);
             switch (columnIndex){
                 case 1:
                     return  bar.key;
@@ -123,7 +123,7 @@ public class Test extends JFrame{
     class Chart3 extends Chart{
 
         @Override
-        protected void onBarClick(ChartBar bar) {
+        protected void onBarClick(ChartElement bar) {
             ChartSeries series = bar.series;
             controlPanel.setSeries(series);
         }
