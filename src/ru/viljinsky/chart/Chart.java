@@ -10,7 +10,7 @@ package ru.viljinsky.chart;
  *
  * @author vadik
  */
-import com.sun.jmx.snmp.BerDecoder;
+// import com.sun.jmx.snmp.BerDecoder;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.*;
@@ -106,7 +106,7 @@ public class Chart extends JPanel{
         ChartSeries series;
         for (int i=seriesList.size()-1;i>=0;i--){
             series = seriesList.get(i);
-            for (ChartElement bar:series.getBars())
+            for (ChartElement bar:series.getElements())
                 if (bar.hitTest(x, y))
                     return bar;
         }
@@ -139,10 +139,9 @@ public class Chart extends JPanel{
         xAxis.begin();
         while (xAxis.hasNext()){
             xValue = xAxis.next();
-            bar = series.getBar(xValue);
+            bar = series.getElementByValue(xValue);
             if (bar!=null){
                 
-//                yValue = Math.round((bar.getValue()-yAxis.minValue)*f);
                 yValue = bar.getValueK(f) - Math.round(yAxis.minValue*f);
                                                               
                 int x=getBarCenter(rect, bar.key);
@@ -209,10 +208,12 @@ public class Chart extends JPanel{
             g.setColor(Color.lightGray);
             g.drawLine(x1, y1, x2, y2);
             // Метки
-            g.setColor(Color.black);
-            sValue = value.toString();
-            fw = g.getFontMetrics().stringWidth(sValue);
-            g.drawString(sValue, x1- fw/2, y2+fh);
+            if (!value.equals(xAxis.maxValue) && !value.equals(xAxis.minValue)){
+                g.setColor(Color.black);
+                sValue = value.toString();
+                fw = g.getFontMetrics().stringWidth(sValue);
+                g.drawString(sValue, x1- fw/2, y2+fh);
+            }
         }
         // Подпись по оси Х
         sValue = xAxis.caption;
@@ -230,11 +231,15 @@ public class Chart extends JPanel{
             y2=y1;
             g.setColor(Color.lightGray);
             g.drawLine(x1, y1, x2, y2);
+            
+            if (!value.equals(yAxis.maxValue) && !value.equals(yAxis.minValue)){
+
             g.setColor(Color.black);
             
             sValue = value.toString();
             fw = g.getFontMetrics().stringWidth(value.toString());
             g.drawString(sValue, x1-fw-2, y1+fh/2);
+            }
         }
         // подпись по оси Y
         sValue = yAxis.caption;
@@ -291,7 +296,7 @@ public class Chart extends JPanel{
             if (series.getMinX()<minValue) minValue=series.getMinX();
             if (series.getMaxX()>maxValue) maxValue=series.getMaxX();
         }
-        xAxis.setRange(minValue, maxValue);
+        xAxis.setRange(minValue-1, maxValue+1);
         
         minValue = Integer.MAX_VALUE;
         maxValue = Integer.MIN_VALUE;
@@ -299,7 +304,7 @@ public class Chart extends JPanel{
             if (series.getMinY()<minValue) minValue=series.getMinY();
             if (series.getMaxY()>maxValue) maxValue=series.getMaxY();
         }
-        yAxis.setRange(minValue, maxValue);
+        yAxis.setRange(minValue-1, maxValue+1);
     }
     
 }

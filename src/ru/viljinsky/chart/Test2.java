@@ -27,34 +27,34 @@ public class Test2  extends Chart{
     
     
     public Test2(){
-        series1 = new ChartSeries("Пример1", Color.yellow);
+        series1 = ChartSeries.createSeries(SeriesType.BAR_CART, "Пример1", Color.yellow);
         series1.addValue(1,1);
         series1.addValue(2,2);
         series1.addValue(3,3);
         series1.addValue(4,4.5);
-        series1.addValue(5,-1);
+        series1.addValue(5,1);
         series1.addValue(6,6);
         series1.addValue(7,12);
         series1.addValue(8,1);
-        series1.addValue(19,1);
+        series1.addValue(10,1);
         series1.rebuild();
         
-        series2 = new ChartSeries("Пример2", new Color(125,255,255));
+        series2 = ChartSeries.createSeries(SeriesType.BAR_CART,"Пример2", new Color(125,255,255));
         series2.addValue(0,8);
         series2.addValue(2,7);
         series2.addValue(3,6);
         series2.addValue(7,5);
         series2.addValue(8,4);
-        series2.addValue(9,-2);
+        series2.addValue(9,2);
         series2.rebuild();
         
-        series3 = new ChartSeries("Пример3",new Color(225,125,225));
+        series3 = ChartSeries.createSeries(SeriesType.BAR_CART,"Пример3",new Color(225,125,225));
         series3.addValue(0,8);
         series3.addValue(1,7);
         series3.addValue(9,6);
         series3.addValue(10,5);
         series3.addValue(2,4);
-        series3.addValue(3,-1);
+        series3.addValue(3,1);
         series3.rebuild();
         
         statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -96,6 +96,11 @@ public class Test2  extends Chart{
         chart.addSeries(series1);
         chart.addSeries(series2);
         chart.addSeries(series3);
+        chart.autoRange();
+        int x1,x2;
+        x1 = chart.getXAxis().minValue-1;
+        x2 = chart.getXAxis().maxValue+1;
+        chart.getXAxis().setRange(x1, x2);
         
         JFrame frame = new JFrame("Chart demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -12,10 +12,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /**
- *
+ * Легенда диаграммы
  * @author vadik
  */
-class ChartLegend {
+public class ChartLegend {
     Font chartFont;
     Integer fontHeight;
     Color backGround;

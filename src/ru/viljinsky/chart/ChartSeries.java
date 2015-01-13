@@ -7,25 +7,30 @@
 package ru.viljinsky.chart;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.AbstractAction;
 
 /**
  *
  * @author vadik
  */
-//public class ChartSeries{
-//    
-//}
+enum SeriesType{
+    BAR_CART,
+    LINE_CHART,
+    AREA_CHART
+}
 
 class ChartSeries{
-    String name = "Noname";
-    Color color = Color.pink;
-    HashMap<Integer, Object> data = new HashMap<>();
-    private List<ChartElement> bars = new ArrayList<>();
+    protected String name = "Noname";
+    protected Color color = Color.pink;
+    protected HashMap<Integer, Object> data = new HashMap<>();
+    protected List<ChartElement> elements = new ArrayList<>();
     
     public String getCaption(){
         return name;
@@ -34,40 +39,85 @@ class ChartSeries{
     public Color getColor(){
         return color;
     }
-    
-    public List<ChartElement> getBars(){
-        return bars;
-    }
-    
-    public ChartElement getElement(Integer index){
-        return bars.get(index);
-    }
-    
+    /**
+     * Количество элементов в серии
+     * @return Количество элементов в серии
+     */
     public Integer getElementCount(){
         return data.size();
     }
     
+    /**
+     * Список всех элементов серии
+     * @return Список всех элементов серии
+     */
+    public List<ChartElement> getElements(){
+        return elements;
+    }
     
-
-    @Override
-    public String toString(){
-        return "ChartSeries "+name+" "+color;
+    /**
+     * Поиск элемента серии по значению X
+     * @param xValue - значение элемента по оси X
+     * @return  если элемент существует - найденный ChartElement,
+     *  в противном случае null
+     */
+    public ChartElement getElementByValue(Integer xValue) {
+        for (ChartElement element : elements) {
+            if (element.key.equals(xValue)) {
+                return element;
+            }
+        }
+        return null;
     }
-    public ChartSeries(Color color) {
-        this.color = color;
-        setData(createData(10));
-    }
 
-    public ChartSeries(String name, Color color) {
-        this.color = color;
-        this.name = name;
+    /**
+     * Получение элемента по порядковому номеру
+     * @param index номер элемента по порядку в списке
+     * @return ChartElement
+     */
+    public ChartElement getElement(Integer index){
+        return elements.get(index);
     }
-
+    
     public Integer getMinX() {
         Integer result = Integer.MAX_VALUE;
         for (Integer n : data.keySet()) {
             if (n < result) {
                 result = n;
+            }
+        }
+        return result;
+    }
+    
+    public Integer getMaxX() {
+        Integer result = Integer.MIN_VALUE;
+        for (Integer n : data.keySet()) {
+            if (n > result) {
+                result = n;
+            }
+        }
+        return result;
+    }
+
+    public Integer getMaxY() {
+        Integer result = Integer.MIN_VALUE;
+        Integer value;
+        for (Integer n : data.keySet()) {
+            value = getYValue(n);
+            if (value > result) {
+                result = value;
+            }
+        }
+        return result;
+    }
+
+    public Integer getMinY() {
+        Integer result = Integer.MAX_VALUE;
+        Integer value;
+        for (Integer n : data.keySet()) {
+            value = getYValue(n);
+            if (value < result) {
+                result = value;
             }
         }
         return result;
@@ -112,39 +162,46 @@ class ChartSeries{
     }
     
 
-    public Integer getMaxX() {
-        Integer result = Integer.MIN_VALUE;
-        for (Integer n : data.keySet()) {
-            if (n > result) {
-                result = n;
-            }
-        }
-        return result;
+    
+    public void addValue(Integer xValue, Object yValue) {
+        data.put(xValue, yValue);
     }
 
-    public Integer getMaxY() {
-        Integer result = Integer.MIN_VALUE;
-        Integer value;
-        for (Integer n : data.keySet()) {
-            value = getYValue(n);
-            if (value > result) {
-                result = value;
-            }
+    public void rebuild() {
+        elements = new ArrayList<>();
+        Set<Integer> keySet = data.keySet();
+        ChartBar bar;
+        int id;
+        for (Iterator it = keySet.iterator(); it.hasNext();) {
+            id = (Integer) it.next();
+            bar = new ChartBar(this, id);
+            bar.value = data.get(id);
+            elements.add(bar);
         }
-        return result;
     }
 
-    public Integer getMinY() {
-        Integer result = Integer.MAX_VALUE;
-        Integer value;
-        for (Integer n : data.keySet()) {
-            value = getYValue(n);
-            if (value < result) {
-                result = value;
-            }
-        }
-        return result;
+    
+    
+    
+    public static ChartSeries createSeries(SeriesType seriesType,String caption,Color color){
+        return new ChartBarSeries(caption, color);
     }
+}
+
+
+class ChartBarSeries extends ChartSeries{
+    
+    
+    @Override
+    public String toString(){
+        return "ChartSeries "+name+" "+color;
+    }
+
+    public ChartBarSeries(String name, Color color) {
+        this.color = color;
+        this.name = name;
+    }
+
 
     public void setData(HashMap<Integer, Object> data) {
         this.data = new HashMap<>();
@@ -154,40 +211,17 @@ class ChartSeries{
         rebuild();
     }
 
-    public void rebuild() {
-        bars = new ArrayList<>();
-        Set<Integer> keySet = data.keySet();
-        ChartBar bar;
-        int id;
-        for (Iterator it = keySet.iterator(); it.hasNext();) {
-            id = (Integer) it.next();
-            bar = new ChartBar(this, id);
-            bar.value = data.get(id);
-            bars.add(bar);
-        }
-    }
-
-    public void addValue(Integer xValue, Object yValue) {
-        data.put(xValue, yValue);
-    }
-
+    /**
+     * Создание экземпляра случайных данных с указанным количеством элементов
+     * @param count колличество элементов
+     * @return сгенерированный набор данных
+     */
     public static HashMap<Integer, Object> createData(Integer count) {
         HashMap<Integer, Object> result = new HashMap<>();
-        //        Long value;
         for (int i = 0; i < count; i++) {
-            //            value = Math.round(Math.random()*100);
             result.put(i, Math.random() * 100);
         }
         return result;
-    }
-
-    public ChartElement getBar(Integer xValue) {
-        for (ChartElement bar : bars) {
-            if (bar.key.equals(xValue)) {
-                return bar;
-            }
-        }
-        return null;
     }
     
 }

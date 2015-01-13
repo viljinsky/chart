@@ -8,6 +8,7 @@ package ru.viljinsky.chart;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 
 /**
@@ -59,19 +60,27 @@ public class ChartBar extends ChartElement{
         h  = bounds.height;
         w  = bounds.width;
         
-        g.setColor(series.color);
+        g.setColor(series.getColor());
         g.fillRect(x,y,w,h);
         // 3d
         g.setColor(Color.gray);
         g.drawLine(x, y, x+w, y);
         g.drawLine(x+w, y, x+w, y+h);
         
-    }
+        Polygon p = new Polygon(new int[]{x,x+10,x+10+w,x+10+w,x+w,x+w,x},
+                                new int[]{y,y-10,y-10,y-10+h,y+h,y,y},
+                                7 );
+        g.setColor(series.getColor());
+        g.fillPolygon(p);
+        g.setColor(Color.gray);
+        g.drawPolygon(p);
+        }
 
     
 
+    @Override
     public String toString() {
-        return "bar xValue:" + key + " yValue:" + value + " series:" + series.name;
+        return "bar xValue:" + key + " yValue:" + value + " series:" + series.getCaption();
     }
     
 }
