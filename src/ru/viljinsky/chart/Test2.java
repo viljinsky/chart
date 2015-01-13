@@ -11,6 +11,7 @@ package ru.viljinsky.chart;
  * @author vadik
  */
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class Test2  extends Chart{
@@ -30,12 +31,12 @@ public class Test2  extends Chart{
         series1.addValue(1,1);
         series1.addValue(2,2);
         series1.addValue(3,3);
-        series1.addValue(4,4);
+        series1.addValue(4,4.5);
         series1.addValue(5,-1);
         series1.addValue(6,6);
-        series1.addValue(7,7);
+        series1.addValue(7,12);
         series1.addValue(8,1);
-        series1.addValue(9,1);
+        series1.addValue(19,1);
         series1.rebuild();
         
         series2 = new ChartSeries("Пример2", new Color(125,255,255));
@@ -44,7 +45,7 @@ public class Test2  extends Chart{
         series2.addValue(3,6);
         series2.addValue(7,5);
         series2.addValue(8,4);
-        series2.addValue(9,-1);
+        series2.addValue(9,-2);
         series2.rebuild();
         
         series3 = new ChartSeries("Пример3",new Color(225,125,225));
@@ -64,12 +65,32 @@ public class Test2  extends Chart{
         JMenu menu = new JMenu("File");
         JMenuItem menuItem;
         
-        menuItem = new JMenuItem("Exit");
-        menu.add(menuItem);
+        for (String command:new String[]{"autorange","exit"}){
+            menuItem = new JMenuItem(new AbstractAction(command) {
+                
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    doCommand(e.getActionCommand());
+                }
+            });
+            menu.add(menuItem);
+        }
         menuBar.add(menu);
         
     }
     
+    public void doCommand(String command){
+        switch (command){
+            case "exit":
+                System.exit(0);
+                break;
+            case "autorange":
+                autoRange();
+                updateUI();
+                break;
+                
+        }
+    }
     public static void createAndShowGUI(){
         Test2 chart = new Test2();
         chart.addSeries(series1);

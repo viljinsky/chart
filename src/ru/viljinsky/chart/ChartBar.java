@@ -6,6 +6,7 @@
 
 package ru.viljinsky.chart;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -25,7 +26,10 @@ public class ChartBar {
     }
 
     public boolean hitTest(int x, int y) {
-        return false;
+        if (bounds!=null)
+            return bounds.contains(x, y);
+        else 
+            return false;
     }
 
     public void setBounds(Rectangle bounds) {
@@ -33,8 +37,19 @@ public class ChartBar {
     }
 
     public void draw(Graphics g) {
+        int x,y,w,h;
+        x = bounds.x;
+        y = bounds.y;
+        h  = bounds.height;
+        w  = bounds.width;
+        
         g.setColor(series.color);
-        g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        g.fillRect(x,y,w,h);
+        // 3d
+        g.setColor(Color.gray);
+        g.drawLine(x, y, x+w, y);
+        g.drawLine(x+w, y, x+w, y+h);
+        
     }
 
     public Integer getValue() {
